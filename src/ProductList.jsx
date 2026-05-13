@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
-import { addItem, removeItem, updateQuantity} from './CartSlice';
-import { useDispatch } from "react-redux";
-
-let cartQuantityCount = 0;
+import { useSelector, useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
 
 function ProductList() {
-    const dispatch = useDispatch();
     const [showCart, setShowCart] = useState(false); 
-    const [showPlants, setShowPlants] = useState(true); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({});
+    const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState({}); // To track which products are added to cart
+    const cart = useSelector((state) => state.cart);
+    const dispatch = useDispatch();
 
     const plantsArray = [
         {
@@ -241,15 +240,11 @@ function ProductList() {
         textDecoration: 'none',
     }
 
-    const handleHomeClick = (e) => {
-        e.preventDefault();
-        onHomeClick(true);
-    };
-
     const handleCartClick = (e) => {
         e.preventDefault();
         setShowCart(true); // Set showCart to true when cart icon is clicked
     };
+
     const handlePlantsClick = (e) => {
         e.preventDefault();
         setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
@@ -257,18 +252,19 @@ function ProductList() {
     };
 
     const handleContinueShopping = (e) => {
-        e.preventDefault(true);
+        e.preventDefault();
         setShowCart(false);
     };
-    const [cartQuantityCount, setCartQuantityCount] = useState(0);
 
     const handleAddToCart = (product) => {
         dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
       
-        setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
+        setAddedToCart((prevState) => ( // Update the local state to reflect that the product has been added
+            {
           ...prevState, // Spread the previous state to retain existing entries
           [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-        }));
+            }
+         ));
       };
       
 
